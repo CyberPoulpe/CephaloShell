@@ -37,7 +37,6 @@ do {
     Write-Output "| 9. Active Directory             |"
     Write-Output "| 10. WSUS                        |"
     Write-Output "| 11. Wake on Lan                 |"
-    Write-output "| 12. Problème en cours           |"
     write-output " --------------------------------- "
     Write-Output "| q. Quitter                      |"
     Write-Output " --------------------------------- "
@@ -472,13 +471,6 @@ do {
             }
             Send-WakeOnLan
             Pause | Clear-Host
-        }
-
-        12 {
-            
-            $testnomUser1 = Read-Host coucou
-            Get-ADUser -Identity $testnomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
-
         }
 
     }
