@@ -50,9 +50,6 @@ This script provides a menu-driven interface to perform various network and syst
 11. **Wake on LAN**: 
     - Sends a Wake-on-LAN (WOL) packet to a specified machine to wake it remotely.
 
-12. **In-Progress Issues**:
-    - Allows for custom actions related to ongoing issues (specific functionality to be defined).
-
 ## Notes
 
 - **Error Handling**: The script includes basic error handling to guide users through incorrect inputs.
