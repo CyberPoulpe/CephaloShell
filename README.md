@@ -1,74 +1,68 @@
-# README - Couteau_suisse : Outil de Gestion Réseau et Système
+# Network and System Management Script
 
-## Description
+## Overview
 
-Ce script PowerShell est conçu pour automatiser et simplifier diverses tâches d'administration réseau et système, telles que la gestion de connexions SSH, l'exécution de diagnostics réseau, la gestion d'utilisateurs Active Directory, et bien plus encore. Il est interactif et basé sur un menu permettant de sélectionner des options spécifiques selon les besoins.
+This script provides a menu-driven interface to perform various network and system management tasks. It is written in PowerShell and offers functionalities such as SSH connections, IP configuration display, network diagnostics, Active Directory management, WSUS reset, and more.
 
-## Fonctionnalités
+## How to Use
 
-Le script présente les fonctionnalités suivantes :
+1. **Launch the Script**: Run the script in a PowerShell environment.
+2. **Menu Navigation**: 
+   - You will be presented with a main menu.
+   - Enter the number corresponding to the task you wish to perform.
+   - Follow the on-screen prompts to complete your task.
+3. **Quit**: To exit the script, enter `q` at any menu prompt.
 
-### 1. Connexion SSH
-- Permet de se connecter à un ordinateur distant via SSH et d'exécuter des commandes à distance de manière répétée jusqu'à ce que l'utilisateur décide de quitter.
+## Main Menu Options
 
-### 2. Afficher la Configuration IP
-- Exécute la commande `ipconfig /all` pour afficher toutes les configurations IP de la machine.
+1. **SSH Connection**: 
+   - Allows you to remotely execute commands on another machine via SSH.
+   - You will be prompted to enter the target machine's name and the command to execute.
 
-### 3. Ping
-- Permet de pinguer une adresse IP ou un nom de machine pour tester la connectivité réseau.
+2. **Display IP Configuration**: 
+   - Shows the complete IP configuration of the current machine using the `ipconfig /all` command.
 
-### 4. nslookup
-- Effectue une recherche DNS (Domain Name System) pour une adresse IP ou un nom DNS donné.
+3. **Ping**: 
+   - Tests connectivity to a specified IP address or hostname.
 
-### 5. Mise à Jour des Politiques de Groupe (gpupdate /force)
-- Exécute une mise à jour forcée des politiques de groupe sur un ordinateur spécifié.
+4. **NSLookup**: 
+   - Queries DNS information for a specified IP address or hostname.
 
-### 6. Tracert
-- Effectue un tracé de la route (traceroute) vers une adresse IP spécifiée pour diagnostiquer les chemins de réseau.
+5. **GPUpdate /force**: 
+   - Forces a Group Policy update on a specified remote machine.
 
-### 7. Scan de Réseau
-- Scanne un sous-réseau pour vérifier la disponibilité des adresses IP dans une plage spécifiée.
+6. **Tracert**: 
+   - Traces the route taken to reach a specified IP address.
 
-### 8. Diagnostic Réseau Rapide
-- Effectue des tests de connectivité réseau basiques (ping, DNS lookup) pour diagnostiquer les problèmes courants.
+7. **Network Scan**: 
+   - Scans a specified range of IP addresses to check for active devices.
 
-### 9. Active Directory
-- Offre des outils pour gérer les utilisateurs, les groupes, et les ordinateurs dans Active Directory :
-  - Gérer un utilisateur : Afficher les informations, gérer les groupes, réinitialiser le mot de passe, etc.
-  - Gérer un groupe : Voir les membres, ajouter/supprimer des utilisateurs dans un groupe.
-  - Gérer un ordinateur : Voir les informations, déplacer dans l'AD, etc.
-  - Vérifier l'état de la réplication AD.
+8. **Quick Network Diagnostic**: 
+   - Performs basic network diagnostics like pinging public DNS servers and resolving a domain name.
 
-### 10. WSUS (Windows Server Update Services)
-- Réinitialise les configurations WSUS sur un serveur local ou à distance.
+9. **Active Directory Management**: 
+   - Manage users, groups, and computers in Active Directory.
+   - Sub-menu includes options for viewing user/group details, adding/removing users from groups, and more.
 
-### 11. Wake on LAN
-- Envoie un paquet Magic pour réveiller une machine à partir de son adresse MAC.
+10. **WSUS Management**: 
+    - Reset Windows Update configuration locally or on a remote machine.
 
-## Utilisation
+11. **Wake on LAN**: 
+    - Sends a Wake-on-LAN (WOL) packet to a specified machine to wake it remotely.
 
-Pour exécuter le script, ouvrez une console PowerShell avec les privilèges administratifs et exécutez-le. Le script affichera un menu interactif où vous pourrez sélectionner les actions souhaitées en entrant le numéro correspondant.
+12. **In-Progress Issues**:
+    - Allows for custom actions related to ongoing issues (specific functionality to be defined).
 
-### Exécution
+## Notes
 
-1. **Lancer le script** : `.\NomDuScript.ps1`
-2. **Choisir une option** : Entrez le numéro correspondant à l'action souhaitée et suivez les instructions à l'écran.
-3. **Quitter le script** : Entrez `q` pour quitter à tout moment.
+- **Error Handling**: The script includes basic error handling to guide users through incorrect inputs.
+- **Permissions**: Some tasks may require administrative privileges on the local or remote machine.
+- **Customization**: This script can be extended or modified to suit specific network or system management needs.
 
-## Prérequis
+## Disclaimer
 
-- **PowerShell** : Assurez-vous d'avoir PowerShell installé sur votre machine.
-- **Privilèges Administratifs** : Certaines fonctionnalités nécessitent des droits administratifs.
-- **Modules PowerShell** : Certains modules comme `ActiveDirectory` sont requis pour des fonctionnalités spécifiques. Assurez-vous qu'ils sont installés et disponibles.
-
-## Avertissement
-
-Ce script effectue des opérations sur des systèmes en production, telles que des mises à jour de configuration réseau et des modifications d'Active Directory. Utilisez-le avec précaution, en particulier dans des environnements sensibles.
+Use this script responsibly and ensure you have the necessary permissions to execute these commands on target machines.
 
 ---
 
-**Auteur** : CyberPoulpe  
-
----
-
-Ce document peut être modifié pour s'adapter aux évolutions du script ou aux besoins spécifiques de l'utilisateur.
+This README provides a clear understanding of the script's functionalities and how to use it effectively.
