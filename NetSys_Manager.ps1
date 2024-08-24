@@ -79,7 +79,6 @@ do {
             Invoke-GPUpdate -Computer $gpupdate -RandomDelayInMinutes 0
             pause | Clear-Host
         }
-######### Traceroute #########
         6 {
             $TraceRT = Read-Host "What is the IP address to be traced"
             tracert $TraceRT
@@ -350,16 +349,33 @@ do {
                         Write-Output "Return"
                     }
                     1 {
-                        Stop-Service -Name wuauserv
-                        Remove-Item "C:\Windows\SoftwareDistribution" -Recurse
+                        $pcwsusservice = "wuauserv"
+                        Write-Output "Discontinuation of $pcwsusservice service"
+                        Stop-Service -Name $pcwsusservice
+                        Start-Sleep -Seconds 1
+                        $PCWSUSdossier = "C:\Windows\SoftwareDistribution"
+                        Write-Output "Deleting $PCWSUSdossier"
+                        Remove-Item $PCWSUSdossier -Recurse
+                        Start-Sleep -Seconds 1
                         Set-Location HKLM:
-                        Remove-ItemProperty -Path "\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" -Name "SusClientId"
-                        Start-Service -Name wuauserv
+                        $pcwsusregistre = "SusClientId"
+                        Write-Output "Removing the registry key $pcwsusregistre"
+                        Remove-ItemProperty -Path "\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" -Name SusClientId
+                        Start-Sleep -Seconds 1
+                        Write-Output "Starting the $pcwsusservice service"
+                        Start-Service -Name $pcwsusservice
+                        Start-Sleep -Seconds 1
+                        Write-Output "Renistialization of the Windows Update configuration"
                         wuauclt /resetauthorization /detectnow
                         wuauclt /reportnow
+                        Start-Sleep -Seconds 1
                         c:
+                        Write-Output "Export windows update logs"
                         Get-WindowsUpdateLog
-                        pause | Clear-Host
+                        Start-Sleep -Seconds 1
+                        Write-Output "GPO updates"
+                        gpupdate /force
+                        Start-Sleep -Seconds 1
                     }
                     2 {
                         $PCWSUS = Read-Host "which PC to connect to the WSUS"
@@ -388,7 +404,6 @@ do {
                             Write-Output "Export windows update logs"
                             Get-WindowsUpdateLog
                             Start-Sleep -Seconds 1
-                            #met a jour les GPO
                             Write-Output "GPO updates"
                             gpupdate /force
                             Start-Sleep -Seconds 1
