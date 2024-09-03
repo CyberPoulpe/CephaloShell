@@ -1,4 +1,4 @@
-﻿Clear-Host
+Clear-Host
 $poulpe = @"
 ⠀⠀⠀⠀⠀⠀⢀⣀⣠⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -16,8 +16,6 @@ $poulpe = @"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠻⣿⣿⣿⣶⣾⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠛⠛⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 "@
-
-
 
 do {
     Write-Output $poulpe
@@ -125,6 +123,7 @@ do {
                         Write-Output "Return"
                     }
                     1 {
+                            
                         do {
                             $nomuserRecherche = Read-Host "Enter the user's last name (or 'q' for exit)"
                         
@@ -137,14 +136,15 @@ do {
                         
                             if ($userRecherche) {
                                 Write-Output "$nomuserRecherche's SamAccountName is : $($userRecherche.SamAccountName)"
+                                
                                 break
                             } else {
                                 Write-Output "User with last name '$nomuserRecherche' Not found. Please try again."
                             }
-                        
+                           
                         } while ($true)
-                        
-                        $nomUser1 = read-host "Enter the user's SamAccountName"
+                         $nomUser1 = read-host "Enter the user's SamAccountName"
+                         
                         do {
                             Clear-Host
                             Write-Output $poulpe
@@ -170,7 +170,7 @@ do {
                                     Write-Output "Return"
                                 }
                                 1 {
-                                    Get-ADUser -Identity $nomUser1 -Properties * | Select-Object EmailAddress, wWWHomePage, SAMAccountName, PasswordLastSet, PasswordExpired, Department, Description, DisplayName, DistinguishedName, whenCreated, Enabled
+                                    Get-ADUser -Identity $nomUser1 -Properties * | Select-Object EmailAddress, wWWHomePage, SAMAc1ountName, PasswordLastSet, PasswordExpired, Department, Description, DisplayName, DistinguishedName, whenCreated, Enabled
                                     pause | Clear-Host
                                 }
                                 2 {
@@ -183,6 +183,7 @@ do {
                                     Add-ADGroupMember -Identity $groupeADadd1_1 -Members $nomUser1
                                     Start-Sleep -Seconds 1
                                     Write-Output "$nomUser1 was added to the $groupeADadd1_1"
+                                    Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
                                     pause | Clear-Host
                                 }
                                 4 {
@@ -192,6 +193,7 @@ do {
                                     Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
                                     Start-Sleep -Seconds 1
                                     Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
+
                                     pause | Clear-Host
                                 }
                                 5 {
@@ -227,7 +229,9 @@ do {
                             Write-Output " -------------------------------------- "
                             Write-Output "| 1. See $nomGroupe1 users              |"
                             Write-Output "| 2. Add a user in $nomGroupe1          |"
-                            Write-Output "| 3. Delete a user in $nomGroupe 1      |"
+                            Write-Output "| 3. Add a computer in $nomGroupe1      |"
+                            Write-Output "| 4. Delete a user in $nomGroupe1       |"
+                            Write-Output "| 5. Delete a comptuter in $nomGroupe1  |"
                             Write-Output " --------------------------------------- "
                             Write-Output "| q. Return                             |"
                             Write-Output " ---------------------------------------"
@@ -248,10 +252,26 @@ do {
                                     Write-Output "$nomuserAdd1_2 has been added to group $nomGroupe1"
                                     pause | Clear-Host
                                 }
-                                3 {
+                                3{
+                                    $nomPCAdd1_2 = Read-Host "Witch computer to add"
+                                    $cheminPC1_2 = Get-ADComputer -Identity $nomPCAdd1_2 | Select-Object DistinguishedName
+                                    Add-ADGroupMember -Identity $nomGroupe1 -Members $cheminPC1_2
+                                    Write-Output "$nomPCAdd1_2 has been added to group $nomGroupe1"
+                                    pause | Clear-Host
+                                }
+                                4 {
+                                    Get-ADGroupMember -Identity $nomGroupe1 | Select-Object name
                                     $nomuserDelet1_2 = Read-Host "which user should be deleted"
                                     Remove-ADGroupMember -Identity $nomGroupe1 -Members $nomuserDelet1_2
                                     Write-Output "$nomuserDelet1_2 has been removed from group $nomGroupe1"
+                                    pause | Clear-Host
+                                }
+                                5{
+                                    Get-ADGroupMember -Identity $nomGroupe1 | Select-Object name
+                                    $nomPCRemove1_2 = Read-Host "which computer should be deleted"
+                                    $cheminPC1_2 = Get-ADComputer -Identity $nomPCRemove1_2 | Select-Object DistinguishedName
+                                    Remove-ADGroupMember -Identity $nomGroupe1 -Members $cheminPC1_2
+                                    Write-Output "$nomPCRemove1_2 has been removed to group $nomGroupe1"
                                     pause | Clear-Host
                                 }
                                 default1_2 {
@@ -273,8 +293,10 @@ do {
                             Write-Output "|         menu : $nomPC1                |"
                             Write-Output " --------------------------------------- "
                             Write-Output "| 1. See the info of $nomPC1            |"
-                            Write-Output "| 2. Move $nomPC 1 in the ad            |"
-                            Write-output "| 3. View $nomPC1 password              |"
+                            Write-Output "| 2. Move $nomPC1 in the ad             |"
+                            Write-output "| 3. Add a $nomPC1 in group             |"
+                            Write-output "| 4. Remove $nomPC1 in group            |"
+                            Write-output "| 5. View $nomPC1 password              |"
                             Write-Output " --------------------------------------- "
                             Write-Output "| q. Return                             |"
                             Write-Output " --------------------------------------- "
@@ -297,6 +319,20 @@ do {
                                     pause | Clear-Host
                                 }
                                 3{
+                                    $nomGroupeAdd1_3 = Read-Host "Witch group to add"
+                                    $cheminPC1_3 = Get-ADComputer -Identity $nomPC1 | Select-Object DistinguishedName
+                                    Add-ADGroupMember -Identity $nomGroupeAdd1_3 -Members $cheminPC1_3
+                                    Write-Output "$nomPC1 has been added to group $nomGroupeAdd1_3"
+                                    pause | Clear-Host
+                                }
+                                4{
+                                    $nomGroupRemove1_2 = Read-Host "which group should be deleted"
+                                    $cheminPC1_2 = Get-ADComputer -Identity $nomPC1 | Select-Object DistinguishedName
+                                    Remove-ADGroupMember -Identity $nomGroupRemove1_2 -Members $cheminPC1_2
+                                    Write-Output "$nomPC1 has been removed to group $nomGroupRemove1_2"
+                                    pause | Clear-Host
+                                }
+                                5{
                                     $passwordPC1= Get-AdmPwdPassword -ComputerName $nomPC1 | Select-Object password 
                                     Write-Host "The password is $passwordPC1"
                                     pause | Clear-Host
