@@ -204,9 +204,23 @@ do {
                                     pause | Clear-Host
                                 }
                                 6{
-                                    Set-ADAccountPassword -Identity $nomUser1 -Reset
-                                    Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
-                                    Write-Output "$nomUser1's password has been reset"
+                                    do {
+                                        $confirm = Read-Host "Are you sure you want to reset the password for $nomUser1? (Y/N)"
+                                        
+                                        if ($confirm -eq "Y") {
+                                            Set-ADAccountPassword -Identity $nomUser1 -Reset
+                                            Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
+                                            Write-Output "$nomUser1's password has been reset"
+                                            $validInput = $true
+                                        } elseif ($confirm -eq "N") {
+                                            Write-Output "Password reset canceled."
+                                            $validInput = $true
+                                        } else {
+                                            Write-Output "Invalid input. Please enter 'Y' or 'N'."
+                                            $validInput = $false
+                                        }
+                                    } while (-not $validInput)
+                                    
                                     pause | Clear-Host
                                 }
                                 default1_1 {
