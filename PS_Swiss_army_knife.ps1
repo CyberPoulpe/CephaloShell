@@ -24,19 +24,19 @@ do {
     Write-Output " --------------------------------- "
     Write-Output "|             Menu                |"
     Write-Output " --------------------------------- "
-    Write-Output "| 1. Connection ssh               |"
+    Write-Output "| 1. Connection SSH               |"
     Write-Output "| 2. View IP Configuration        |"
     Write-Output "| 3. Ping                         |"
-    Write-Output "| 4. nslookup                     |"
-    Write-Output "| 5. gpupdate /force              |"
-    Write-Output "| 6. tracert                      |"
+    Write-Output "| 4. Nslookup                     |"
+    Write-Output "| 5. Gpupdate /force              |"
+    Write-Output "| 6. Tracert                      |"
     Write-Output "| 7. Network Scan                 |"
-    Write-Output "| 8. Rapid network diagnostics    |"
+    Write-Output "| 8. Rapid Network Diagnostics    |"
     Write-Output "| 9. Active Directory             |"
     Write-Output "| 10. WSUS                        |"
-    Write-Output "| 11. Wake on Lan                 |"
+    Write-Output "| 11. Wake On Lan                 |"
     write-output " --------------------------------- "
-    Write-Output "| q. To leave                     |"
+    Write-Output "| q. To Leave                     |"
     Write-Output " --------------------------------- "
 
     $choix = Read-Host "Enter your choice"
@@ -123,112 +123,110 @@ do {
                         Write-Output "Return"
                     }
                     1 {
-                            
                         do {
-                            $nomuserRecherche = Read-Host "Enter the user's last name (or 'q' for exit)"
-                        
+
+                            $nomuserRecherche = Read-Host "Enter the user's last name (or 'q' to cancel the search)"
+
                             if ($nomuserRecherche -eq 'q') {
-                                Write-Output "Research cancelled"
+                                Write-Output "Research cancelled. Exiting script."
                                 break
                             }
-                        
+
                             $userRecherche = Get-ADUser -Filter {sn -eq $nomuserRecherche} -Property SamAccountName
-                        
+
                             if ($userRecherche) {
                                 Write-Output "$nomuserRecherche's SamAccountName is : $($userRecherche.SamAccountName)"
                                 
-                                break
-                            } else {
-                                Write-Output "User with last name '$nomuserRecherche' Not found. Please try again."
-                            }
-                           
-                        } while ($true)
-                         $nomUser1 = read-host "Enter the user's SamAccountName"
-                         
-                        do {
-                            Clear-Host
-                            Write-Output $poulpe
-                            Write-Output " --------------------------------------"
-                            Write-Output "| Please choose a number :            |"
-                            Write-Output " -------------------------------------- "
-                            Write-Output "|         menu : $nomUser1            |"
-                            Write-Output " -------------------------------------- "
-                            Write-Output "| 1. See the information of $nomUser1 |"
-                            Write-Output "| 2. See $nomUser1 groups             |"
-                            Write-Output "| 3. Add $nomUser1 to a group         |"
-                            Write-Output "| 4. Remove $nomUser1 from a group    |"
-                            Write-Output "| 5. Move $nomUser1 in the ad         |"
-                            Write-Output "| 6. Reset the PWD of $nomUser1       |"
-                            Write-Output " -------------------------------------- "
-                            Write-Output "| q. Return                           |"
-                            Write-Output " --------------------------------------"
+                                $nomUser1 = Read-Host "Enter the user's SamAccountName"
+                                do {
+                                    Clear-Host
+                                    Write-Output $poulpe
+                                    Write-Output " --------------------------------------"
+                                    Write-Output "| Please choose a number :            |"
+                                    Write-Output " -------------------------------------- "
+                                    Write-Output "|         menu : $nomUser1            |"
+                                    Write-Output " -------------------------------------- "
+                                    Write-Output "| 1. See the information of $nomUser1 |"
+                                    Write-Output "| 2. See $nomUser1 groups             |"
+                                    Write-Output "| 3. Add $nomUser1 to a group         |"
+                                    Write-Output "| 4. Remove $nomUser1 from a group    |"
+                                    Write-Output "| 5. Move $nomUser1 in the ad         |"
+                                    Write-Output "| 6. Reset the PWD of $nomUser1       |"
+                                    Write-Output " -------------------------------------- "
+                                    Write-Output "| q. Return                           |"
+                                    Write-Output " --------------------------------------"
 
-                            $choix1_1 = Read-Host "Enter your choice"
+                                    $choix1_1 = Read-Host "Enter your choice"
 
-                            switch ($choix1_1) {
-                                q {
-                                    Write-Output "Return"
-                                }
-                                1 {
-                                    Get-ADUser -Identity $nomUser1 -Properties * | Select-Object EmailAddress, wWWHomePage, SAMAc1ountName, PasswordLastSet, PasswordExpired, Department, Description, DisplayName, DistinguishedName, whenCreated, Enabled
-                                    pause | Clear-Host
-                                }
-                                2 {
-                                    Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
-                                    pause | Clear-Host
-                                }
-                                3 {
-                                    $groupeADadd1_1 = Read-Host "What is the group to add"
-                                    Write-Output "Added $nomUser1 to the $groupeADadd1_1..."
-                                    Add-ADGroupMember -Identity $groupeADadd1_1 -Members $nomUser1
-                                    Start-Sleep -Seconds 1
-                                    Write-Output "$nomUser1 was added to the $groupeADadd1_1"
-                                    Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
-                                    pause | Clear-Host
-                                }
-                                4 {
-                                    Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
-                                    $groupeADdelet1_1 = Read-Host "What is the group to be deleted"
-                                    Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
-                                    Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
-                                    Start-Sleep -Seconds 1
-                                    Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
-
-                                    pause | Clear-Host
-                                }
-                                5 {
-                                    $NomOU5 = Read-Host "What is the agent's new OU"
-                                    $nom5 = Get-ADUser $nomUser1
-                                    Move-ADObject -Identity $Nom5 -TargetPath $NomOU5
-                                    Write-Output = "$nomUser1 was moved here: $NomOU5"
-                                    pause | Clear-Host
-                                }
-                                6{
-                                    do {
-                                        $confirm = Read-Host "Are you sure you want to reset the password for $nomUser1? (Y/N)"
-                                        
-                                        if ($confirm -eq "Y") {
-                                            Set-ADAccountPassword -Identity $nomUser1 -Reset
-                                            Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
-                                            Write-Output "$nomUser1's password has been reset"
-                                            $validInput = $true
-                                        } elseif ($confirm -eq "N") {
-                                            Write-Output "Password reset canceled."
-                                            $validInput = $true
-                                        } else {
-                                            Write-Output "Invalid input. Please enter 'Y' or 'N'."
-                                            $validInput = $false
+                                    switch ($choix1_1) {
+                                        q {
+                                            Write-Output "Return"
                                         }
-                                    } while (-not $validInput)
+                                        1 {
+                                            Get-ADUser -Identity $nomUser1 -Properties * | Select-Object EmailAddress, wWWHomePage, SAMAc1ountName, PasswordLastSet, PasswordExpired, Department, Description, DisplayName, DistinguishedName, whenCreated, Enabled
+                                            pause | Clear-Host
+                                        }
+                                        2 {
+                                            Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
+                                            pause | Clear-Host
+                                        }
+                                        3 {
+                                            $groupeADadd1_1 = Read-Host "What is the group to add"
+                                            Write-Output "Added $nomUser1 to the $groupeADadd1_1..."
+                                            Add-ADGroupMember -Identity $groupeADadd1_1 -Members $nomUser1
+                                             Start-Sleep -Seconds 1
+                                             Write-Output "$nomUser1 was added to the $groupeADadd1_1"
+                                            Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
+                                            pause | Clear-Host
+                                         }
+                                        4 {
+                                            Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
+                                            $groupeADdelet1_1 = Read-Host "What is the group to be deleted"
+                                            Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
+                                            Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
+                                            Start-Sleep -Seconds 1
+                                            Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
+
+                                            pause | Clear-Host
+                                        }
+                                        5 {
+                                            $NomOU5 = Read-Host "What is the agent's new OU"
+                                            $nom5 = Get-ADUser $nomUser1
+                                            Move-ADObject -Identity $Nom5 -TargetPath $NomOU5
+                                            Write-Output = "$nomUser1 was moved here: $NomOU5"
+                                            pause | Clear-Host
+                                        }
+                                        6{
+                                            do {
+                                                $confirm = Read-Host "Are you sure you want to reset the password for $nomUser1? (Y/N)"
+                                        
+                                                if ($confirm -eq "Y") {
+                                                    Set-ADAccountPassword -Identity $nomUser1 -Reset
+                                                    Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
+                                                    Write-Output "$nomUser1's password has been reset"
+                                                    $validInput = $true
+                                                } elseif ($confirm -eq "N") {
+                                                    Write-Output "Password reset canceled."
+                                                    $validInput = $true
+                                                } else {
+                                                    Write-Output "Invalid input. Please enter 'Y' or 'N'."
+                                                    $validInput = $false
+                                                }
+                                            } while (-not $validInput)
                                     
-                                    pause | Clear-Host
-                                }
-                                default1_1 {
-                                    Write-Output "Invalid choice !"
-                                    Start-Sleep -Seconds 1
-                                }
+                                            pause | Clear-Host
+                                        }
+                                        default1_1 {
+                                            Write-Output "Invalid choice !"
+                                            Start-Sleep -Seconds 1
+                                        }
+                                    }
+                                } while ($choix1_1 -ne "q")
+                                break   
+                            } else {
+                                Write-Output "User with last name '$nomuserRecherche' not found. Please try again."
                             }
-                        } while ($choix1_1 -ne "q")
+                        } while ($true)
                         Clear-Host
                     }
                     2 {
