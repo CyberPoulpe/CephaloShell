@@ -35,7 +35,7 @@ do {
     $exitOption = "q. To Leave"
 
     # Largeur totale fixe pour tout le tableau (y compris les bordures)
-    $totalWidth = 44  # Ajuste cette valeur pour adapter la largeur souhaitée
+    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
 
     # Créer les bordures fixes
     $border = ("-" * $totalWidth)
@@ -147,7 +147,7 @@ Show-Menu
                     $exitADOption = "q. Return"
 
                     # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                    $totalWidth = 44  # Ajuste cette valeur pour adapter la largeur souhaitée
+                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
                     # Créer les bordures fixes
                     $border = ("-" * $totalWidth)
 
@@ -213,7 +213,7 @@ Show-Menu
                                     $exitADOption_User = "q. Return"
 
                                     # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                                    $totalWidth = 55  # Ajuste cette valeur pour adapter la largeur souhaitée
+                                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
 
                                     # Créer les bordures fixes
                                     $border = ("-" * $totalWidth)
@@ -284,13 +284,23 @@ Show-Menu
                                         }
                                         4 {
                                             Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
-                                            $groupeADdelet1_1 = Read-Host "What is the group to be deleted"
-                                            Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
-                                            Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
-                                            Start-Sleep -Seconds 1
-                                            Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
-
-                                            pause | Clear-Host
+                                            do {
+                                                $nomgroupeADDelete1_1 = Read-Host "What is the group to add or 'q' to cancel the search)"
+                                                if ($nomgroupeADDelete1_1 -eq 'q') {
+                                                    break
+                                                }
+                                                $groupeRechercheADDelete1_1 = Get-ADGroup -Filter {Name -eq $nomgroupeADDelete1_1} -Property SamAccountName
+                                                if ($groupeRechercheADDelete1_1) {
+                                                    $groupeADdelet1_1 = $($groupeRechercheADDelete1_1.SamAccountName)
+                                                    Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
+                                                    Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
+                                                    Start-Sleep -Seconds 1
+                                                    Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
+                                                } else {
+                                                    Write-Output "No group found with the name '$nomgroupeADadd1_1'. Please try again."
+                                                }
+                                            } while ($true)
+                                            Start-Sleep -Seconds 1 | Clear-Host
                                         }
                                         5 {
                                             $NomOU5 = Read-Host "What is the agent's new OU"
@@ -319,7 +329,7 @@ Show-Menu
 
                                             pause | Clear-Host
                                         }
-                                        default1_1 {
+                                        default {
                                             Write-Output "Invalid choice !"
                                             Start-Sleep -Seconds 1
                                         }
@@ -442,7 +452,7 @@ Show-Menu
                                             pause | Clear-Host
                                         }
                                         default {
-                                            Write-Output "Invalid choice! Please try again."
+                                            Write-Output "Invalid choice !"
                                             Start-Sleep -Seconds 1
                                             Clear-Host
                                         }
@@ -467,10 +477,12 @@ Show-Menu
                                     $optionAD3_PC = "Add a $nomPC1 in group"
                                     $optionAD4_PC = "Remove $nomPC1 in group"
                                     $optionAD5_PC = "View $nomPC1 password"
+                                    $optionAD6_PC = "Gpupdate /force"
+                                    $optionAD7_PC = "SSH"
                                     $exitADOption_PC = "q. Return"
 
                                     # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                                    $totalWidth = 55  # Ajuste cette valeur pour adapter la largeur souhaitée
+                                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
 
                                     # Créer les bordures fixes
                                     $border = ("-" * $totalWidth)
@@ -493,6 +505,8 @@ Show-Menu
                                     Write-Host "| $(OptionAD_PC 3 $optionAD3_PC)|"
                                     Write-Host "| $(OptionAD_PC 4 $optionAD4_PC)|"
                                     Write-Host "| $(OptionAD_PC 5 $optionAD5_PC)|"
+                                    write-host "| $(OptionAD_PC 6 $optionAD6_PC)|"
+                                    write-host "| $(OptionAD_PC 7 $optionAD7_PC)|"
                                     Write-Host " $border"
                                     Write-Host "| $(OptionAD_PC $exitADOption_PC)|"
                                     Write-Host " $border"
@@ -537,7 +551,27 @@ Show-Menu
                                     Write-Output "The password is $passwordPC1"
                                     pause | Clear-Host
                                 }
-                                default1_3 {
+                                6{
+                                    Write-Output "Gpupdate /force"
+                                    Invoke-GPUpdate -Computer $nomPC1 -RandomDelayInMinutes 0
+                                    pause | Clear-Host
+                                }
+                                7{
+                                    do {
+                                        $commande = Read-Host "Command to run (press q to exit)"
+                                        if ($commande -eq 'q') {
+                                            break
+                                        }
+                                        else {
+                                            Invoke-Command -ComputerName $nomPC1 -ScriptBlock {
+                                            param ($commandeInterne)
+                                            Invoke-Expression $commandeInterne
+                                            } -ArgumentList $commande
+                                        }
+                                    } while ($true)
+                                    Clear-Host
+                                }
+                                default {
                                     Write-Output "Invalid choice !"
                                     Start-Sleep -Seconds 1
                                 }
@@ -550,7 +584,7 @@ Show-Menu
                         Pause | Clear-Host
                     }
 
-                    default1_3 {
+                    default {
                         Write-Output "Invalid choice !"
                         Start-Sleep -Seconds 1
                     }
@@ -573,7 +607,7 @@ Show-Menu
                         $exitOption_WSUS = "q. Return"
 
                         # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                        $totalWidth = 55  # Ajuste cette valeur pour adapter la largeur souhaitée
+                        $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
 
                         # Créer les bordures fixes
                         $border = ("-" * $totalWidth)
@@ -671,7 +705,7 @@ Show-Menu
                         } -ComputerName $PCWSUS
                         pause | Clear-Host
                     }
-                    default2 {
+                    default {
                         Write-Output "Invalid choice !"
                         Start-Sleep -Seconds 1
                     }
