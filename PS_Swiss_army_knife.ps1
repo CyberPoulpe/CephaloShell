@@ -20,7 +20,6 @@ function poulpe {write-output @"
 do {
     function Show-Menu {
 
-    # Variables du menu
     $option1 = "Connection SSH"
     $option2 = "View IP Configuration"
     $option3 = "Ping"
@@ -34,20 +33,16 @@ do {
     $option11 = "Wake On Lan"
     $exitOption = "q. To Leave"
 
-    # Largeur totale fixe pour tout le tableau (y compris les bordures)
-    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
+    $totalWidth = 90
 
-    # Créer les bordures fixes
     $border = ("-" * $totalWidth)
 
-    # Fonction pour ajouter des espaces dynamiques après chaque option afin de remplir la ligne
     function Option {
         param($optionNumber, $optionText)
         $optionLine = "$optionNumber. $optionText"
-        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))  # Remplir la ligne jusqu'à la longueur totale
+        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
     }
 
-    # Affichage du tableau
     Write-Host " $border"
     Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
     Write-Host " $border"
@@ -78,10 +73,14 @@ Show-Menu
             Clear-Host
         }
         1 {
-            $PCcommande = Read-Host "PC name"
+            $PCcommande = Read-Host "PC name (press q to exit)"
+            if ($PCcommande -eq 'q'){
+                Start-Sleep -Milliseconds 500 | Clear-Host
+                break
+            }
             do {
                 $commande = Read-Host "Command to run (press q to exit)"
-                if ($commande -eq 'q') {
+                if ($commande -eq 'q'){
                     break
                 }
                 else {
@@ -99,7 +98,7 @@ Show-Menu
         }
         3 {
             $ping = Read-Host "What is the IP address/pc name ping"
-            Test-Connection $ping
+            ping $ping
             pause | Clear-Host
         }
         4 {
@@ -127,38 +126,37 @@ Show-Menu
             pause | Clear-Host
             }
         8 {
+            Write-Output "ping 8.8.8.8"
             Test-Connection 8.8.8.8
-            pause
+            start-sleep -Milliseconds 500
+            Write-Output "ping google.com"
             Test-Connection google.com
-            pause
+            Start-Sleep -Milliseconds 500
+            Write-Output "nslookup facebook 8.8.8.8"
             nslookup fabebook.com 8.8.8.8
-            pause | Clear-Host
+            Pause | Clear-Host
         }
         9 {
             Clear-Host
             do {
                 function Show-MenuAD {
 
-                    # Variables du menu
                     $optionAD1 = "Manage a User"
                     $optionAD2 = "Manage a Group"
                     $optionAD3 = "Manage a PC"
                     $optionAD4 = "AD replication status"
                     $exitADOption = "q. Return"
 
-                    # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
-                    # Créer les bordures fixes
+                    $totalWidth = 90
+
                     $border = ("-" * $totalWidth)
 
-                    # Fonction pour ajouter des espaces dynamiques après chaque option afin de remplir la ligne
                     function OptionAD {
                         param($optionNumber, $optionText)
                         $optionLine = "$optionNumber. $optionText"
-                        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))  # Remplir la ligne jusqu'à la longueur totale
+                        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                     }
 
-                    # Affichage du tableau
                     Write-Host " $border"
                     Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                     Write-Host " $border"
@@ -202,50 +200,44 @@ Show-Menu
                                 do {
                                     function Show-MenuAD_User {
 
+                                        $optionAD1_User = "See the information of $nomUser1"
+                                        $optionAD2_User = "See $nomUser1 groups"
+                                        $optionAD3_User = "Add $nomUser1 to a group"
+                                        $optionAD4_User = "Remove $nomUser1 frome a group"
+                                        $optionAD5_User = "Move $nomUser1 in the ad"
+                                        $optionAD6_User = "Reset the PWD of $nomUser1"
+                                        $exitADOption_User = "q. Return"
 
-                                    # Variables du menu
-                                    $optionAD1_User = "See the information of $nomUser1"
-                                    $optionAD2_User = "See $nomUser1 groups"
-                                    $optionAD3_User = "Add $nomUser1 to a group"
-                                    $optionAD4_User = "Remove $nomUser1 frome a group"
-                                    $optionAD5_User = "Move $nomUser1 in the ad"
-                                    $optionAD6_User = "Reset the PWD of $nomUser1"
-                                    $exitADOption_User = "q. Return"
+                                        $totalWidth = 90
 
-                                    # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
+                                        $border = ("-" * $totalWidth)
 
-                                    # Créer les bordures fixes
-                                    $border = ("-" * $totalWidth)
+                                        function OptionAD_User {
+                                            param($optionNumber, $optionText)
+                                            $optionLine = "$optionNumber. $optionText"
+                                            return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
+                                        }
 
-                                    # Fonction pour ajouter des espaces dynamiques après chaque option afin de remplir la ligne
-                                    function OptionAD_User {
-                                        param($optionNumber, $optionText)
-                                        $optionLine = "$optionNumber. $optionText"
-                                        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))  # Remplir la ligne jusqu'à la longueur totale
+                                        Write-Host " $border"
+                                        Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
+                                        Write-Host " $border"
+                                        Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
+                                        Write-Host " $border"
+                                        Write-Host "| $(OptionAD_User 1 $optionAD1_User)|"
+                                        Write-Host "| $(OptionAD_User 2 $optionAD2_User)|"
+                                        Write-Host "| $(OptionAD_User 3 $optionAD3_User)|"
+                                        Write-Host "| $(OptionAD_User 4 $optionAD4_User)|"
+                                        Write-Host "| $(OptionAD_User 5 $optionAD5_User)|"
+                                        Write-Host "| $(OptionAD_User 6 $optionAD6_User)|"
+                                        Write-Host " $border"
+                                        Write-Host "| $(OptionAD_User $exitADOption_User)|"
+                                        Write-Host " $border"
                                     }
+                                Clear-Host
+                                poulpe
+                                Show-MenuAD_User
 
-                                    # Affichage du tableau
-                                    Write-Host " $border"
-                                    Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
-                                    Write-Host " $border"
-                                    Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
-                                    Write-Host " $border"
-                                    Write-Host "| $(OptionAD_User 1 $optionAD1_User)|"
-                                    Write-Host "| $(OptionAD_User 2 $optionAD2_User)|"
-                                    Write-Host "| $(OptionAD_User 3 $optionAD3_User)|"
-                                    Write-Host "| $(OptionAD_User 4 $optionAD4_User)|"
-                                    Write-Host "| $(OptionAD_User 5 $optionAD5_User)|"
-                                    Write-Host "| $(OptionAD_User 6 $optionAD6_User)|"
-                                    Write-Host " $border"
-                                    Write-Host "| $(OptionAD_User $exitADOption_User)|"
-                                    Write-Host " $border"
-                                }
-                            Clear-Host
-                            poulpe
-                            Show-MenuAD_User
-
-                            $choix1_1 = Read-Host "Enter your choice"
+                                $choix1_1 = Read-Host "Enter your choice"
 
                                     switch ($choix1_1) {
                                         q {
@@ -273,14 +265,14 @@ Show-Menu
                                                     $groupeADadd1_1 = $($groupeRechercheADadd1_1.SamAccountName)
                                                     Write-Output "Added $nomUser1 to the $groupeADadd1_1..."
                                                     Add-ADGroupMember -Identity $groupeADadd1_1 -Members $nomUser1
-                                                    Start-Sleep -Seconds 1
+                                                    Start-Sleep -Milliseconds 500
                                                     Write-Output "$nomUser1 was added to the $groupeADadd1_1"
                                                     Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
                                                 } else {
                                                     Write-Output "No group found with the name '$nomgroupeADadd1_1'. Please try again."
                                                 }
                                             } while ($true)
-                                            Start-Sleep -Seconds 1 | Clear-Host
+                                            Start-Sleep -Milliseconds 500 | Clear-Host
                                         }
                                         4 {
                                             Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
@@ -294,13 +286,13 @@ Show-Menu
                                                     $groupeADdelet1_1 = $($groupeRechercheADDelete1_1.SamAccountName)
                                                     Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
                                                     Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
-                                                    Start-Sleep -Seconds 1
+                                                    Start-Sleep -Milliseconds 500
                                                     Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
                                                 } else {
                                                     Write-Output "No group found with the name '$nomgroupeADadd1_1'. Please try again."
                                                 }
                                             } while ($true)
-                                            Start-Sleep -Seconds 1 | Clear-Host
+                                            Start-Sleep -Milliseconds 500 | Clear-Host
                                         }
                                         5 {
                                             $NomOU5 = Read-Host "What is the agent's new OU"
@@ -331,7 +323,7 @@ Show-Menu
                                         }
                                         default {
                                             Write-Output "Invalid choice !"
-                                            Start-Sleep -Seconds 1
+                                            Start-Sleep -Milliseconds 500
                                         }
                                     }
                                 } while ($choix1_1 -ne "q")
@@ -344,42 +336,38 @@ Show-Menu
                     }
                     2{
                         do {
-                            # Demander à l'utilisateur d'entrer le nom du groupe ou de quitter
+
                             $nomGroupeRecherche = Read-Host "Enter the group's name (or 'q' to cancel the search)"
-                        
+
                             if ($nomGroupeRecherche -eq 'q') {
-                            Write-Output "Search cancelled. Exiting script."
-                            break
+                                Write-Output "Search cancelled. Exiting script."
+                                break
                             }
-                    
-                            # Chercher le groupe dans AD
+
                             $groupeRecherche = Get-ADGroup -Filter {Name -eq $nomGroupeRecherche} -Property SamAccountName
-                    
+
                             if ($groupeRecherche) {
                                 $nomGroupe1 = $($groupeRecherche.SamAccountName)
                                 do {
                                     function Show-MenuAD_group {
-                    
-                                        # Variables du menu
+
                                         $optionAD1_group = "See $($groupeRecherche.SamAccountName) users"
                                         $optionAD2_group = "Add a user in $($groupeRecherche.SamAccountName)"
                                         $optionAD3_group = "Add a computer in $($groupeRecherche.SamAccountName)"
                                         $optionAD4_group = "Delete a user in $($groupeRecherche.SamAccountName)"
                                         $optionAD5_group = "Delete a computer in $($groupeRecherche.SamAccountName)"
+                                        $optionAD6_group = "Move $($groupeRecherche.SamAccountName) in AD"
                                         $exitADOption_group = "q. Return"
-                    
-                                        # Largeur fixe du tableau
+
                                         $totalWidth = 90
                                         $border = ("-" * $totalWidth)
-                    
-                                        # Fonction pour formater les options avec des espaces
+
                                         function OptionAD_group {
                                             param($optionNumber, $optionText)
                                             $optionLine = "$optionNumber. $optionText"
                                             return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                                         }
-                    
-                                        # Affichage du menu
+
                                         Write-Host " $border"
                                         Write-Host "| Please choose a number : " + (" " * ($totalWidth - 30)) + "|"
                                         Write-Host " $border"
@@ -390,41 +378,41 @@ Show-Menu
                                         Write-Host "| $(OptionAD_group 3 $optionAD3_group)|"
                                         Write-Host "| $(OptionAD_group 4 $optionAD4_group)|"
                                         Write-Host "| $(OptionAD_group 5 $optionAD5_group)|"
+                                        Write-Host "| $(OptionAD_group 6 $optionAD6_group)|"
                                         Write-Host " $border"
                                         Write-Host "| $(OptionAD_group $exitADOption_group)|"
                                         Write-Host " $border"
                                     }
-                    
+
                                     Clear-Host
                                     poulpe
                                     Show-MenuAD_group
-                    
+
                                     $choix1_2 = Read-Host "Enter your choice"
-                    
+
                                     switch ($choix1_2) {
                                         q {
-                                            break 
+                                            break
                                         }
                                         1 {
-                                            Get-ADGroupMember -Identity $nomGroupe1 | Select-Object name, SamAccountName
+                                            Get-ADGroupMember -Identity $nomGroupe1 | Select-Object Name, SamAccountName
                                             pause | Clear-Host
                                         }
                                         2 {
                                             do {
-                                                $nomuserRechercheforGroup = Read-Host "Enter the user's last name (or 'q' to cancel the search)"
-                                                if ($nomuserRechercheforGroup -eq 'q') {
+                                                $nomuserRechercheforADDGroup = Read-Host "Enter the user's last name (or 'q' to cancel the search)"
+                                                if ($nomuserRechercheforADDGroup -eq 'q') {
                                                     break
                                                     Clear-Host
                                                 }
-                                                $userRechercheforGourp = Get-ADUser -Filter {sn -eq $nomuserRechercheforGroup} -Property SamAccountName
+                                                $userRechercheforGourp = Get-ADUser -Filter {sn -eq $nomuserRechercheforADDGroup} -Property SamAccountName
                                                 if ($userRechercheforGourp) {
-                                                    Write-Output "$nomuserRechercheforGroup's SamAccountName is : $($userRechercheforGourp.SamAccountName)"
+                                                    Write-Output "$nomuserRechercheforADDGroup's SamAccountName is : $($userRechercheforGourp.SamAccountName)"
                                                     $nomuserAdd1_2 = Read-Host "Enter the user's SamAccountName"
                                                         Add-ADGroupMember -Identity $nomGroupe1 -Members $nomuserAdd1_2
                                                         Write-Output "$nomuserAdd1_2 has been added to group $nomGroupe1"
-                                                        pause 
                                                 } else {
-                                                    Write-Output "User with last name $nomuserRechercheforGroup not found. Please try again."
+                                                    Write-Output "User with last name $nomuserRechercheforADDGroup not found. Please try again."
                                                 }
                                             }while ($true)
                                             Clear-Host
@@ -437,11 +425,24 @@ Show-Menu
                                             pause | Clear-Host
                                         }
                                         4 {
-                                            Get-ADGroupMember -Identity $nomGroupe1 | Select-Object name, SamAccountName
-                                            $nomuserDelet1_2 = Read-Host "which user should be deleted"
-                                            Remove-ADGroupMember -Identity $nomGroupe1 -Members $nomuserDelet1_2
-                                            Write-Output "$nomuserDelet1_2 has been removed from group $nomGroupe1"
-                                            pause | Clear-Host
+                                            Get-ADGroupMember -Identity $nomGroupe1 | Select-Object
+                                            do {
+                                                $nomuserRechercheforRemoveGroup = Read-Host "Enter the user's last name (or 'q' to cancel the search)"
+                                                if ($nomuserRechercheforRemoveGroup -eq 'q') {
+                                                    break
+                                                    Clear-Host
+                                                }
+                                                $userRechercheforGourp = Get-ADUser -Filter {sn -eq $nomuserRechercheforRemoveGroup} -Property SamAccountName
+                                                if ($userRechercheforGourp) {
+                                                    Write-Output "$nomuserRechercheforRemoveGroup's SamAccountName is : $($userRechercheforGourp.SamAccountName)"
+                                                    $nomuserDelet1_2 = Read-Host "Enter the user's SamAccountName"
+                                                    Remove-ADGroupMember -Identity $nomGroupe1 -Members $nomuserDelet1_2
+                                                    Write-Output "$nomuserDelet1_2 has been removed from group $nomGroupe1"
+                                                } else {
+                                                    Write-Output "User with last name $nomuserRechercheforRemoveGroup not found. Please try again."
+                                                }
+                                            }while ($true)
+                                            Clear-Host
                                         }
                                         5 {
                                             Get-ADGroupMember -Identity $nomGroupe1 | Select-Object name
@@ -451,66 +452,67 @@ Show-Menu
                                             Write-Output "$nomPCRemove1_2 has been removed from group $nomGroupe1"
                                             pause | Clear-Host
                                         }
+                                        6{
+                                            $NomOU6 = Read-Host "What is the group's new OU"
+                                            $nom6 = Get-ADGroup $nomGroupe1
+                                            Move-ADObject -Identity $nom6 -TargetPath $NomOU6
+                                            Write-Output = "$nomGroupe1 was moved here: $NomOU6"
+                                            pause | Clear-Host
+                                        }
                                         default {
                                             Write-Output "Invalid choice !"
-                                            Start-Sleep -Seconds 1
+                                            Start-Sleep -Milliseconds 500
                                             Clear-Host
                                         }
                                     }
                                 } while ($choix1_2 -ne "q")
-                    
+
                             } else {
                                 Write-Output "No group found with the name '$nomGroupeRecherche'. Please try again."
                             }
                         } while ($true)
-                    } 
+                    }
                     3 {
                         $nomPC1 = Read-Host "What is the PC to manage"
 
                                 do {
                                     function Show-MenuAD_PC {
+                                        $optionAD1_PC = "See the info of $nomPC1"
+                                        $optionAD2_PC = "Move $nomPC1 in the AD"
+                                        $optionAD3_PC = "Add a $nomPC1 in group"
+                                        $optionAD4_PC = "Remove $nomPC1 in group"
+                                        $optionAD5_PC = "View $nomPC1 password"
+                                        $optionAD6_PC = "Gpupdate /force"
+                                        $optionAD7_PC = "SSH"
+                                        $exitADOption_PC = "q. Return"
+
+                                        $totalWidth = 90
 
 
-                                    # Variables du menu
-                                    $optionAD1_PC = "See the info of $nomPC1"
-                                    $optionAD2_PC = "Move $nomPC1 in the AD"
-                                    $optionAD3_PC = "Add a $nomPC1 in group"
-                                    $optionAD4_PC = "Remove $nomPC1 in group"
-                                    $optionAD5_PC = "View $nomPC1 password"
-                                    $optionAD6_PC = "Gpupdate /force"
-                                    $optionAD7_PC = "SSH"
-                                    $exitADOption_PC = "q. Return"
+                                        $border = ("-" * $totalWidth)
 
-                                    # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                                    $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
+                                        function OptionAD_PC {
+                                            param($optionNumber, $optionText)
+                                            $optionLine = "$optionNumber. $optionText"
+                                            return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
+                                        }
 
-                                    # Créer les bordures fixes
-                                    $border = ("-" * $totalWidth)
-
-                                    # Fonction pour ajouter des espaces dynamiques après chaque option afin de remplir la ligne
-                                    function OptionAD_PC {
-                                        param($optionNumber, $optionText)
-                                        $optionLine = "$optionNumber. $optionText"
-                                        return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))  # Remplir la ligne jusqu'à la longueur totale
+                                        Write-Host " $border"
+                                        Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
+                                        Write-Host " $border"
+                                        Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
+                                        Write-Host " $border"
+                                        Write-Host "| $(OptionAD_PC 1 $optionAD1_PC)|"
+                                        Write-Host "| $(OptionAD_PC 2 $optionAD2_PC)|"
+                                        Write-Host "| $(OptionAD_PC 3 $optionAD3_PC)|"
+                                        Write-Host "| $(OptionAD_PC 4 $optionAD4_PC)|"
+                                        Write-Host "| $(OptionAD_PC 5 $optionAD5_PC)|"
+                                        write-host "| $(OptionAD_PC 6 $optionAD6_PC)|"
+                                        write-host "| $(OptionAD_PC 7 $optionAD7_PC)|"
+                                        Write-Host " $border"
+                                        Write-Host "| $(OptionAD_PC $exitADOption_PC)|"
+                                        Write-Host " $border"
                                     }
-
-                                    # Affichage du tableau
-                                    Write-Host " $border"
-                                    Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
-                                    Write-Host " $border"
-                                    Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
-                                    Write-Host " $border"
-                                    Write-Host "| $(OptionAD_PC 1 $optionAD1_PC)|"
-                                    Write-Host "| $(OptionAD_PC 2 $optionAD2_PC)|"
-                                    Write-Host "| $(OptionAD_PC 3 $optionAD3_PC)|"
-                                    Write-Host "| $(OptionAD_PC 4 $optionAD4_PC)|"
-                                    Write-Host "| $(OptionAD_PC 5 $optionAD5_PC)|"
-                                    write-host "| $(OptionAD_PC 6 $optionAD6_PC)|"
-                                    write-host "| $(OptionAD_PC 7 $optionAD7_PC)|"
-                                    Write-Host " $border"
-                                    Write-Host "| $(OptionAD_PC $exitADOption_PC)|"
-                                    Write-Host " $border"
-                                }
                                 Clear-Host
                                 poulpe
                                 Show-MenuAD_PC
@@ -573,7 +575,7 @@ Show-Menu
                                 }
                                 default {
                                     Write-Output "Invalid choice !"
-                                    Start-Sleep -Seconds 1
+                                    Start-Sleep -Milliseconds 500
                                 }
                             }
                         } while ($choix1_3 -ne "q")
@@ -586,7 +588,7 @@ Show-Menu
 
                     default {
                         Write-Output "Invalid choice !"
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                     }
                 }
             } while ($choix1 -ne "q")
@@ -595,31 +597,26 @@ Show-Menu
         }
         default {
             Write-Output "Invalid choice !"
-            Start-Sleep -Seconds 1 | Clear-Host
+            Start-Sleep -Milliseconds 500 | Clear-Host
         }
         10 {
 
                 do {
                     function Show-Menu_WSUS {
-                        # Variables du menu
                         $option1_WSUS = "Reset the WSUS config "
                         $option2_WSUS = "Reset the WSUS config remotely"
                         $exitOption_WSUS = "q. Return"
 
-                        # Largeur totale fixe pour tout le tableau (y compris les bordures)
-                        $totalWidth = 90  # Ajuste cette valeur pour adapter la largeur souhaitée
+                        $totalWidth = 90
 
-                        # Créer les bordures fixes
                         $border = ("-" * $totalWidth)
 
-                        # Fonction pour ajouter des espaces dynamiques après chaque option afin de remplir la ligne
                         function Option_WSUS {
                             param($optionNumber, $optionText)
                             $optionLine = "$optionNumber. $optionText"
-                            return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))  # Remplir la ligne jusqu'à la longueur totale
+                            return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                         }
 
-                        # Affichage du tableau
                         Write-Host " $border"
                         Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                         Write-Host " $border"
@@ -642,32 +639,31 @@ Show-Menu
                     q {
                         Clear-Host
                     }
-
                     1 {
                         $pcwsusservice = "wuauserv"
                         Write-Output "Discontinuation of $pcwsusservice service"
                         Stop-Service -Name $pcwsusservice
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         $PCWSUSdossier = "C:\Windows\SoftwareDistribution"
                         Write-Output "Deleting $PCWSUSdossier"
                         Remove-Item $PCWSUSdossier -Recurse
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         Set-Location HKLM:
                         $pcwsusregistre = "SusClientId"
                         Write-Output "Removing the registry key $pcwsusregistre"
                         Remove-ItemProperty -Path "\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" -Name SusClientId
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         Write-Output "Starting the $pcwsusservice service"
                         Start-Service -Name $pcwsusservice
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         Write-Output "Renistialization of the Windows Update configuration"
                         wuauclt /resetauthorization /detectnow
                         wuauclt /reportnow
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         c:
                         Write-Output "Export windows update logs"
                         Get-WindowsUpdateLog
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                         Write-Output "GPO updates"
                         gpupdate /force
                         Pause | Clear-Host
@@ -678,36 +674,36 @@ Show-Menu
                             $pcwsusservice = "wuauserv"
                             Write-Output "Discontinuation of $pcwsusservice service"
                             Stop-Service -Name $pcwsusservice
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             $PCWSUSdossier = "C:\Windows\SoftwareDistribution"
                             Write-Output "Deleting $PCWSUSdossier"
                             Remove-Item $PCWSUSdossier -Recurse
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             Set-Location HKLM:
                             $pcwsusregistre = "SusClientId"
                             Write-Output "Removing the registry key $pcwsusregistre"
                             Remove-ItemProperty -Path "\SOFTWARE\Microsoft\Windows\CurrentVersion\WindowsUpdate" -Name SusClientId
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             Write-Output "Starting the $pcwsusservice service"
                             Start-Service -Name $pcwsusservice
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             Write-Output "Renistialization of the Windows Update configuration"
                             wuauclt /resetauthorization /detectnow
                             wuauclt /reportnow
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             c:
                             Write-Output "Export windows update logs"
                             Get-WindowsUpdateLog
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                             Write-Output "GPO updates"
                             gpupdate /force
-                            Start-Sleep -Seconds 1
+                            Start-Sleep -Milliseconds 500
                         } -ComputerName $PCWSUS
                         pause | Clear-Host
                     }
                     default {
                         Write-Output "Invalid choice !"
-                        Start-Sleep -Seconds 1
+                        Start-Sleep -Milliseconds 500
                     }
                 }
             } while ($choix2 -ne "q")
@@ -716,7 +712,7 @@ Show-Menu
 
         default2 {
             Write-Output "Invalid choice !"
-            Start-Sleep -Seconds 1 | Clear-Host
+            Start-Sleep -Milliseconds 500 | Clear-Host
         }
 
         11{
@@ -733,14 +729,13 @@ Show-Menu
                 $udpClient.Connect(([System.Net.IPAddress]::Broadcast), 4000)
                 [void]$udpClient.Send($wolPacket, $wolPacket.Length)
                 Write-Output "Magic package send to $macAddress"
-                Start-Sleep -Seconds 1
+                Start-Sleep -Milliseconds 500
 
                 $udpClient.Close()
             }
             Send-WakeOnLan
             Pause | Clear-Host
         }
-
     }
 } while ($choix -ne "q")
 Clear-Host
