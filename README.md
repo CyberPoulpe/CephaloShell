@@ -60,6 +60,9 @@ This script provides a menu-driven interface to perform various network and syst
 
 Use this script responsibly and ensure you have the necessary permissions to execute these commands on target machines.
 
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
 ---
 
 This README provides a clear understanding of the script's functionalities and how to use it effectively.
