@@ -63,6 +63,7 @@ Use this script responsibly and ensure you have the necessary permissions to exe
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for more details.
----
+
+----
 
 This README provides a clear understanding of the script's functionalities and how to use it effectively.
