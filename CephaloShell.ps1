@@ -1,5 +1,5 @@
 Clear-Host
-function poulpe {write-output @"
+function get-poulpe {write-output @"
 ⠀⠀⠀⠀⠀⠀⢀⣀⣠⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⢠⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀⣠⣶⣾⣷⣶⣄⠀⠀⠀⠀⠀
@@ -59,11 +59,12 @@ do {
     Write-Host "| $(Option 9 $option9)|"
     Write-Host "| $(Option 10 $option10)|"
     Write-Host "| $(Option 11 $option11)|"
+    Write-Host "| $(Option 12 $option12)|"
     Write-Host " $border"
     Write-Host "| $(Option $exitOption)|"
     Write-Host " $border"
 }
-poulpe
+get-poulpe
 Show-Menu
 
 
@@ -171,7 +172,7 @@ Show-Menu
                     Write-Host " $border"
                 }
                 Clear-Host
-                poulpe
+                get-poulpe
                 Show-MenuAD
 
                 $choix1 = Read-Host "Enter your choice"
@@ -234,7 +235,7 @@ Show-Menu
                                         Write-Host " $border"
                                     }
                                 Clear-Host
-                                poulpe
+                                get-poulpe
                                 Show-MenuAD_User
 
                                 $choix1_1 = Read-Host "Enter your choice"
@@ -296,9 +297,11 @@ Show-Menu
                                         }
                                         5 {
                                             $NomOU5 = Read-Host "What is the agent's new OU"
-                                            $nom5 = Get-ADUser $nomUser1
-                                            Move-ADObject -Identity $Nom5 -TargetPath $NomOU5
-                                            Write-Output = "$nomUser1 was moved here: $NomOU5"
+                                            $NomOURecherche5 = Get-ADOrganizationalUnit -Filter { Name -eq $NomOU5}
+                                            $nomOUok5 = Get-ADOrganizationalUnit $nomOUrecherche5
+                                            $Nom5 = Get-ADUser $nomUser1
+                                            Move-ADObject -Identity $Nom5 -TargetPath $nomOUok5
+                                            Write-Output = "$nomUser1 was moved here: $NomOURecherche5"
                                             pause | Clear-Host
                                         }
                                         6{
@@ -385,7 +388,7 @@ Show-Menu
                                     }
 
                                     Clear-Host
-                                    poulpe
+                                    get-poulpe
                                     Show-MenuAD_group
 
                                     $choix1_2 = Read-Host "Enter your choice"
@@ -454,9 +457,11 @@ Show-Menu
                                         }
                                         6{
                                             $NomOU6 = Read-Host "What is the group's new OU"
+                                            $NomOURecherche6 = Get-ADOrganizationalUnit -Filter { Name -eq $NomOU6}
+                                            $nomOUok6 = Get-ADOrganizationalUnit $nomOUrecherche6
                                             $nom6 = Get-ADGroup $nomGroupe1
-                                            Move-ADObject -Identity $nom6 -TargetPath $NomOU6
-                                            Write-Output = "$nomGroupe1 was moved here: $NomOU6"
+                                            Move-ADObject -Identity $nom6 -TargetPath $nomOUok6
+                                            Write-Output = "$nomGroupe1 was moved here: $NomOURecherche6"
                                             pause | Clear-Host
                                         }
                                         default {
@@ -514,11 +519,9 @@ Show-Menu
                                         Write-Host " $border"
                                     }
                                 Clear-Host
-                                poulpe
+                                get-poulpe
                                 Show-MenuAD_PC
-
                             $choix1_3 = Read-Host "Enter your choice"
-
                             switch ($choix1_3) {
                                 q {
                                     Clear-Host
@@ -527,11 +530,13 @@ Show-Menu
                                     Get-ADComputer $nomPC1
                                     pause | Clear-Host
                                 }
-                                2{
+                                2{  
                                     $NomOUPC2 = Read-Host "What is the new OU of the PC"
+                                    $NomOURecherche2 = Get-ADOrganizationalUnit -Filter { Name -eq $NomOUPC2}
+                                    $nomOUok2 = Get-ADOrganizationalUnit $NomOURecherche2
                                     $nomPC2 = Get-ADComputer $nomPC1
-                                    Move-ADObject -Identity $nomPC2 -TargetPath $NomOUPC2
-                                    Write-Output = "$nomPC1 has been moved here: $NomOUPC2"
+                                    Move-ADObject -Identity $nomPC2 -TargetPath $nomOUok2
+                                    Write-Output = "$nomPC1 was moved here: $NomOURecherche2"
                                     pause | Clear-Host
                                 }
                                 3{
@@ -579,20 +584,17 @@ Show-Menu
                                 }
                             }
                         } while ($choix1_3 -ne "q")
-
                     }
                     4 {
                         Repadmin /replsum
                         Pause | Clear-Host
                     }
-
                     default {
                         Write-Output "Invalid choice !"
                         Start-Sleep -Milliseconds 500
                     }
                 }
             } while ($choix1 -ne "q")
-
            Clear-Host
         }
         default {
@@ -600,23 +602,18 @@ Show-Menu
             Start-Sleep -Milliseconds 500 | Clear-Host
         }
         10 {
-
                 do {
                     function Show-Menu_WSUS {
                         $option1_WSUS = "Reset the WSUS config "
                         $option2_WSUS = "Reset the WSUS config remotely"
                         $exitOption_WSUS = "q. Return"
-
                         $totalWidth = 90
-
                         $border = ("-" * $totalWidth)
-
                         function Option_WSUS {
                             param($optionNumber, $optionText)
                             $optionLine = "$optionNumber. $optionText"
                             return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                         }
-
                         Write-Host " $border"
                         Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                         Write-Host " $border"
@@ -628,13 +625,10 @@ Show-Menu
                         Write-Host "| $(Option_WSUS $exitOption_WSUS)|"
                         Write-Host " $border"
                     }
-
                 Clear-Host
-                poulpe
+                get-poulpe
                 Show-Menu_WSUS
-
                 $choix2 = Read-Host "Enter your choice"
-
                 switch ($choix2) {
                     q {
                         Clear-Host
@@ -670,6 +664,7 @@ Show-Menu
                     }
                     2 {
                         $PCWSUS = Read-Host "which PC to connect to the WSUS"
+                        Invoke-GPUpdate -Computer $PCWSUS -RandomDelayInMinutes 0
                         Invoke-Command -ScriptBlock {
                             $pcwsusservice = "wuauserv"
                             Write-Output "Discontinuation of $pcwsusservice service"
@@ -714,7 +709,6 @@ Show-Menu
             Write-Output "Invalid choice !"
             Start-Sleep -Milliseconds 500 | Clear-Host
         }
-
         11{
             function Send-WakeOnLan {
                 param ([string] $macAddress = (Read-Host "Enter the MAC address of the target computer"))
