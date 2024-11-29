@@ -59,7 +59,6 @@ do {
     Write-Host "| $(Option 9 $option9)|"
     Write-Host "| $(Option 10 $option10)|"
     Write-Host "| $(Option 11 $option11)|"
-    Write-Host "| $(Option 12 $option12)|"
     Write-Host " $border"
     Write-Host "| $(Option $exitOption)|"
     Write-Host " $border"
@@ -128,10 +127,10 @@ Show-Menu
             }
         8 {
             Write-Output "ping 8.8.8.8"
-            Test-Connection 8.8.8.8
+            ping 8.8.8.8
             start-sleep -Milliseconds 500
             Write-Output "ping google.com"
-            Test-Connection google.com
+            ping google.com
             Start-Sleep -Milliseconds 500
             Write-Output "nslookup facebook 8.8.8.8"
             nslookup fabebook.com 8.8.8.8
@@ -161,7 +160,7 @@ Show-Menu
                     Write-Host " $border"
                     Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                     Write-Host " $border"
-                    Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
+                    Write-Host "| Menu : Active Directory"(" " * ($totalWidth - 28))"|"
                     Write-Host " $border"
                     Write-Host "| $(OptionAD 1 $optionAD1)|"
                     Write-Host "| $(OptionAD 2 $optionAD2)|"
@@ -200,7 +199,7 @@ Show-Menu
                                 Clear-Host
                                 do {
                                     function Show-MenuAD_User {
-
+                                        $nomcomplet = Get-ADUser -Identity $nomUser1 -Property DisplayName
                                         $optionAD1_User = "See the information of $nomUser1"
                                         $optionAD2_User = "See $nomUser1 groups"
                                         $optionAD3_User = "Add $nomUser1 to a group"
@@ -215,14 +214,14 @@ Show-Menu
 
                                         function OptionAD_User {
                                             param($optionNumber, $optionText)
-                                            $optionLine = "$optionNumber. $optionText"
+                                            $optionLine = "$optionNumber $optionText"
                                             return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                                         }
 
                                         Write-Host " $border"
                                         Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                                         Write-Host " $border"
-                                        Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
+                                        Write-Host "| $(OptionAD_User 'Menu :' $($nomcomplet.DisplayName))|"
                                         Write-Host " $border"
                                         Write-Host "| $(OptionAD_User 1 $optionAD1_User)|"
                                         Write-Host "| $(OptionAD_User 2 $optionAD2_User)|"
@@ -309,6 +308,10 @@ Show-Menu
                                                 $confirm = Read-Host "Are you sure you want to reset the password for $nomUser1? (Y/N)"
 
                                                 if ($confirm -eq "Y") {
+                                                    $passwordexpire = Get-ADUser $nomUser1 -Properties PasswordNeverExpires
+                                                    if ($passwordexpire.PasswordNeverExpires -eq $true){
+                                                        Set-ADUser $nomUser1 -PasswordNeverExpires $false
+                                                    }
                                                     Set-ADAccountPassword -Identity $nomUser1 -Reset
                                                     Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
                                                     Write-Output "$nomUser1's password has been reset"
@@ -367,14 +370,14 @@ Show-Menu
 
                                         function OptionAD_group {
                                             param($optionNumber, $optionText)
-                                            $optionLine = "$optionNumber. $optionText"
+                                            $optionLine = "$optionNumber $optionText"
                                             return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                                         }
 
                                         Write-Host " $border"
-                                        Write-Host "| Please choose a number : " + (" " * ($totalWidth - 30)) + "|"
+                                        Write-Host "| Please choose a number : " + (" " * ($totalWidth - 30))"|"
                                         Write-Host " $border"
-                                        Write-Host "| Menu" + (" " * ($totalWidth - 9)) + "|"
+                                        Write-Host "| $(OptionAD_group 'Menu :' $nomGroupe1)|"
                                         Write-Host " $border"
                                         Write-Host "| $(OptionAD_group 1 $optionAD1_group)|"
                                         Write-Host "| $(OptionAD_group 2 $optionAD2_group)|"
@@ -486,7 +489,7 @@ Show-Menu
                                         $optionAD2_PC = "Move $nomPC1 in the AD"
                                         $optionAD3_PC = "Add a $nomPC1 in group"
                                         $optionAD4_PC = "Remove $nomPC1 in group"
-                                        $optionAD5_PC = "View $nomPC1 password"
+                                        $optionAD5_PC = "View $nomPC1 local password"
                                         $optionAD6_PC = "Gpupdate /force"
                                         $optionAD7_PC = "SSH"
                                         $exitADOption_PC = "q. Return"
@@ -498,14 +501,14 @@ Show-Menu
 
                                         function OptionAD_PC {
                                             param($optionNumber, $optionText)
-                                            $optionLine = "$optionNumber. $optionText"
+                                            $optionLine = "$optionNumber $optionText"
                                             return $optionLine + (" " * ($totalWidth - ($optionLine.Length + 3)))
                                         }
 
                                         Write-Host " $border"
                                         Write-Host "| Please choose a number : "(" " * ($totalWidth - 30))"|"
                                         Write-Host " $border"
-                                        Write-Host "| Menu"(" " * ($totalWidth - 9))"|"
+                                        Write-Host "| $(OptionAD_PC 'Menu :' $nomPC1)|"
                                         Write-Host " $border"
                                         Write-Host "| $(OptionAD_PC 1 $optionAD1_PC)|"
                                         Write-Host "| $(OptionAD_PC 2 $optionAD2_PC)|"
