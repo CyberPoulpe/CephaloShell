@@ -253,6 +253,89 @@ switch ($choix) {
                                     Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
                                     pause | Clear-Host
                                 }
+                                3 {
+                                    do {
+                                        $nomgroupeADadd1_1 = Read-Host "What is the group to add or 'q' to cancel the search)"
+                                        if ($nomgroupeADadd1_1 -eq 'q') {
+                                            break
+                                        }
+                                        $groupeRechercheADadd1_1 = Get-ADGroup -Filter {Name -eq $nomgroupeADadd1_1} -Property SamAccountName
+                                        if ($groupeRechercheADadd1_1) {
+                                            $groupeADadd1_1 = $($groupeRechercheADadd1_1.SamAccountName)
+                                            Write-Output "Added $nomUser1 to the $groupeADadd1_1..."
+                                            Add-ADGroupMember -Identity $groupeADadd1_1 -Members $nomUser1
+                                            Start-Sleep -Milliseconds 500
+                                            Write-Output "$nomUser1 was added to the $groupeADadd1_1"
+                                            Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
+                                        } else {
+                                            Write-Output "No group found with the name '$nomgroupeADadd1_1'. Please try again."
+                                        }
+                                    } while ($true)
+                                    Start-Sleep -Milliseconds 500 | Clear-Host
+                                }
+                                4 {
+                                    Get-ADUser -Identity $nomUser1 -Property MemberOf | Select-Object -ExpandProperty MemberOf | ForEach-Object { ($_ -split ',')[0] -replace '^CN=' }
+                                    do {
+                                        $nomgroupeADDelete1_1 = Read-Host "What is the group to add or 'q' to cancel the search)"
+                                        if ($nomgroupeADDelete1_1 -eq 'q') {
+                                            break
+                                        }
+                                        $groupeRechercheADDelete1_1 = Get-ADGroup -Filter {Name -eq $nomgroupeADDelete1_1} -Property SamAccountName
+                                        if ($groupeRechercheADDelete1_1) {
+                                            $groupeADdelet1_1 = $($groupeRechercheADDelete1_1.SamAccountName)
+                                            Write-Output "Removed $nomUser1 from the $groupeADdelet1_1..."
+                                            Remove-ADGroupMember -Identity $groupeADdelet1_1 -Members $nomUser1
+                                            Start-Sleep -Milliseconds 500
+                                            Write-Output "$nomUser1 has been removed from the $groupeADdelet1_1 group"
+                                        } else {
+                                            Write-Output "No group found with the name '$nomgroupeADadd1_1'. Please try again."
+                                        }
+                                    } while ($true)
+                                    Start-Sleep -Milliseconds 500 | Clear-Host
+                                }
+                                5 {
+                                    $NomOU5 = Read-Host "What is the agent's new OU"
+                                    $NomOURecherche5 = Get-ADOrganizationalUnit -Filter { Name -eq $NomOU5}
+                                    $nomOUok5 = Get-ADOrganizationalUnit $nomOUrecherche5
+                                    $Nom5 = Get-ADUser $nomUser1
+                                    Move-ADObject -Identity $Nom5 -TargetPath $nomOUok5
+                                    Write-Output = "$nomUser1 was moved here: $NomOURecherche5"
+                                    pause | Clear-Host
+                                }
+                                6{
+                                    do {
+                                        $confirm = Read-Host "Are you sure you want to reset the password for $nomUser1? (Y/N)"
+                                        if ($confirm -eq "Y") {
+                                            $passwordexpire = Get-ADUser $nomUser1 -Properties PasswordNeverExpires
+                                            if ($passwordexpire.PasswordNeverExpires -eq $true){
+                                                Set-ADUser $nomUser1 -PasswordNeverExpires $false
+                                            }
+                                                Set-ADAccountPassword -Identity $nomUser1 -Reset
+                                                Set-ADUser -Identity $nomUser1 -ChangePasswordAtLogon $true
+                                                Write-Output "$nomUser1's password has been reset"
+                                                $validInput = $true
+                                            } elseif ($confirm -eq "N") {
+                                                Write-Output "Password reset canceled."
+                                                $validInput = $true
+                                        } else {
+                                            Write-Output "Invalid input. Please enter 'Y' or 'N'."
+                                            $validInput = $false
+                                        }
+                                    } while (-not $validInput)
+                                    pause | Clear-Host
+                                }
+                                7{
+                                    $userdesactive_reactive = Get-ADUser $nomUser1 -Properties * | Select-Object Enabled
+                                    if ($userdesactive_reactive.Enabled -eq $false){
+                                        Enable-ADAccount -Identity $nomUser1
+                                        Write-Output "The $nomUser1 account has been reactivated"
+                                    }else {
+                                        Disable-ADAccount -Identity $nomUser1
+                                        Write-Output "The $nomUser1 account has been deactivated"
+                                    }
+                                    Pause | Clear-Host
+                                }
+
                                 default {
                                 Write-Output "Invalid choice !"
                                 Start-Sleep -Milliseconds 500
